@@ -3,10 +3,7 @@ import SwiftUI
 struct TaskCancellationView: View {
     let iterationCount = 10
 
-    @State
-    private var messages = [String]()
-
-    let logger = Logger()
+    let logger = Logger.shared
 
     var body: some View {
         VStack {

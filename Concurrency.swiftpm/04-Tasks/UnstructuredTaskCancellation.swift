@@ -23,7 +23,6 @@ extension UnstructuredTaskCancellationView {
         func load() {
             task = Task {
                 do {
-
                     try await Task.sleep(for: .seconds(5))
                 } catch {
                     taskStatus = "Cancelled"

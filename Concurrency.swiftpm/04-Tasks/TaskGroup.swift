@@ -60,9 +60,9 @@ extension TaskGroupView {
                 throw "BadURL"
             }
 
-            print(debugDate(), "Started \(index)")
+            await Logger.shared.log("Started \(index)")
             let (data, _) = try await URLSession.shared.data(from: url, delegate: nil)
-            print(debugDate(), "Finished \(index)")
+            await Logger.shared.log("Finished \(index)")
 
             guard let image = UIImage(data: data) else {
                 throw "InvalidImage"

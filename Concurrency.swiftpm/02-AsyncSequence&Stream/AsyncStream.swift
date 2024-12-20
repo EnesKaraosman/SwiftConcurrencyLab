@@ -26,10 +26,10 @@ extension NotificationCenter {
 //extension Notification: @unchecked Sendable {}
 
 struct AsyncStreamView: View {
-    @State
+    @State.Logged
     private var didEnterBackgroundNotification = ""
 
-    @State
+    @State.Logged
     private var streamedPhrase = ""
 
     var body: some View {
@@ -70,7 +70,6 @@ struct AsyncStreamView: View {
         }
 
         for try await item in stream {
-            print(item)
             streamedPhrase = item
         }
     }

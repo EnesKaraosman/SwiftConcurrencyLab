@@ -8,21 +8,11 @@
 import SwiftUI
 
 struct AsyncAwaitView: View {
-    let logger = Logger()
+    @State.Logged
+    private var data: UIState<String> = .initial
 
-    @State
-    private var data: UIState<String> = .initial {
-        didSet {
-            Task { await logger.log("\(data)") }
-        }
-    }
-
-    @State
-    private var data2: UIState<String> = .initial {
-        didSet {
-            Task { await logger.log("\(data2)") }
-        }
-    }
+    @State.Logged
+    private var data2: UIState<String> = .initial
 
     var body: some View {
         VStack {
@@ -41,7 +31,7 @@ struct AsyncAwaitView: View {
                             let fetchedData = try await fetchData()
                             data = .success(fetchedData)
                         } catch {
-                            data = .error("Error fetching data")
+                            data = .error("Error data1")
                         }
                     }
                 }
@@ -51,21 +41,19 @@ struct AsyncAwaitView: View {
                         Text(data)
                     }
                 }, footer: {
-                    Button("Fetch Data") {
+                    Button("Fetch Data 2") {
                         Task {
                             do {
                                 data2 = .loading
                                 let fetchedData = try await fetchData()
                                 data2 = .success(fetchedData)
                             } catch {
-                                data2 = .error("Error fetching data")
+                                data2 = .error("Error data2")
                             }
                         }
                     }
                 })
             }
-
-            LoggerView(logger: logger)
         }
     }
 
@@ -74,7 +62,7 @@ struct AsyncAwaitView: View {
         try await Task.sleep(for: .seconds(1))
 
         if Bool.random() {
-            return "Data fetched successfully!"
+            return "Data fetched success"
         }
 
         throw "Network error occured"
