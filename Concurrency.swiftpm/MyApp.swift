@@ -8,10 +8,10 @@ struct MyApp: App {
                 Form {
                     Section(content: {
                         NavigationLink("Basic", destination: {
-                            AsyncAwaitView()
+                            NavigationLazyView { AsyncAwaitView() }
                         })
                         NavigationLink("Async Let", destination: {
-                            AsyncLetTasksView()
+                            NavigationLazyView { AsyncLetTasksView() }
                         })
                     }, header: {
                         Text("Getting Started")
@@ -19,10 +19,10 @@ struct MyApp: App {
 
                     Section(content: {
                         NavigationLink("AsyncSequence", destination: {
-                            AsyncSequenceView()
+                            NavigationLazyView { AsyncSequenceView() }
                         })
                         NavigationLink("AsyncStream", destination: {
-                            AsyncStreamView()
+                            NavigationLazyView { AsyncStreamView() }
                         })
                     }, header: {
                         Text("AsyncSequence & AsyncStream")
@@ -30,10 +30,10 @@ struct MyApp: App {
 
                     Section(content: {
                         NavigationLink("Callback to Continuations", destination: {
-                            CallbackToContinuationsView()
+                            NavigationLazyView { CallbackToContinuationsView() }
                         })
                         NavigationLink("Delegate to Continuations", destination: {
-                            DelegateToContinuationsView()
+                            NavigationLazyView { DelegateToContinuationsView() }
                         })
                     }, header: {
                         Text("Intermediate")
@@ -41,13 +41,13 @@ struct MyApp: App {
 
                     Section (content: {
                         NavigationLink("Task Group", destination: {
-                            TaskGroupView()
+                            NavigationLazyView { TaskGroupView() }
                         })
                         NavigationLink("Task Priority", destination: {
-                            TaskPrioritiesView()
+                            NavigationLazyView { TaskPrioritiesView() }
                         })
                         NavigationLink("Task Cancellation", destination: {
-                            TaskCancellationView()
+                            NavigationLazyView { TaskCancellationView() }
                         })
                     }, header: {
                         Text("Tasks")
@@ -55,5 +55,17 @@ struct MyApp: App {
                 }
             }
         }
+    }
+}
+
+struct NavigationLazyView<Content: View>: View {
+    let build: () -> Content
+
+    init(_ build: @escaping () -> Content) {
+        self.build = build
+    }
+
+    var body: Content {
+        build()
     }
 }

@@ -66,10 +66,6 @@ actor Logger {
     // AsyncStream continuation to publish messages
     private var continuation: AsyncStream<String>.Continuation?
 
-    init() {
-        print("#EK Logger initialized")
-    }
-
     // Lazy initialization for the AsyncStream to avoid capturing `self` prematurely
     lazy var logStream: AsyncStream<String> = .init { continuation in
         self.continuation = continuation
@@ -77,14 +73,19 @@ actor Logger {
 
     // Method to log a message
     func log(_ message: String) {
-        logs.append(message)            // Add to local storage
-        continuation?.yield(message)    // Publish to the stream
-        print("Logged: \(message)")     // Debug print
+        let debugMessage = debugDate() + message
+        logs.append(debugMessage)
+        continuation?.yield(debugMessage)
+        print(debugMessage)
     }
 
     // Retrieve all logged messages
     func getAllLogs() -> [String] {
         return logs
+    }
+
+    func clear() {
+        logs.removeAll()
     }
 
     // End the stream when no more updates will occur
@@ -101,14 +102,20 @@ struct LoggerView: View {
 
     var body: some View {
         VStack(alignment: .leading) {
-            Text("Logs;")
-                .fontWeight(.bold)
-            ForEach(messages, id: \.self) { message in
-                HStack {
-                    Text(debugDate())
-                    Spacer()
-                    Text(message)
+            HStack {
+                Text("Logs;")
+                    .fontWeight(.bold)
+                Spacer()
+                Button("Clear") {
+                    Task {
+                        messages.removeAll()
+                        await logger.clear()
+                    }
                 }
+            }
+            ForEach(messages, id: \.self) { message in
+                Text(message)
+                    .frame(maxWidth: .infinity, alignment: .leading)
             }
         }
         .font(.footnote)
