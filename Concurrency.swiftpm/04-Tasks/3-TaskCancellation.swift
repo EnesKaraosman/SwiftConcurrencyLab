@@ -1,7 +1,7 @@
 import SwiftUI
 
 struct TaskCancellationView: View {
-    let iterationCount = 10
+    let iterationCount = 20
 
     let logger = Logger.shared
 
@@ -26,13 +26,13 @@ struct TaskCancellationView: View {
                 }
 
                 await logger.log("Processing \(i)...")
-                try? await Task.sleep(for: .seconds(0.5))
+                try? await Task.sleep(for: .seconds(0.52))
             }
 
             await logger.log("Task completed.")
         }
 
-        try? await Task.sleep(for: .seconds(2))
+        try? await Task.sleep(for: .seconds(3))
         task.cancel()
 
         await logger.log("Task canceled!")

@@ -48,12 +48,13 @@ struct StateView<T, Content: View>: View {
     }
 }
 
-extension String: Error {}
+extension String: @retroactive Error {}
 
 func debugDate() -> String {
     let date = Date()
     let formatter = DateFormatter()
-    formatter.dateFormat = "H:mm:ss.SSSS"
+//    formatter.dateFormat = "H:mm:ss.SSSS"
+    formatter.dateFormat = "ss.SSSS"
 
     return formatter.string(from: date) + " => " // -> "17:51:15.1720"
 }

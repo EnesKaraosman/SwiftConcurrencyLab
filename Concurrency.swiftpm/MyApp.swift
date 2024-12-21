@@ -49,6 +49,12 @@ struct MyApp: App {
                         NavigationLink("Task Cancellation", destination: {
                             NavigationLazyView { TaskCancellationView() }
                         })
+                        NavigationLink("Task Group Cancellation", destination: {
+                            NavigationLazyView { TaskGroupCancellationView() }
+                        })
+                        NavigationLink("Unstructured Task Cancellation", destination: {
+                            NavigationLazyView { UnstructuredTaskCancellationView() }
+                        })
                     }, header: {
                         Text("Tasks")
                     })

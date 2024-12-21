@@ -11,68 +11,78 @@ struct TaskPrioritiesView: View {
     @StateObject
     private var viewModel = TasksViewModel()
 
+    let logger = Logger.shared
+
     var body: some View {
         VStack {
-            if let image = viewModel.image {
-                Image(uiImage: image)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
+            HStack {
+                if let image = viewModel.image {
+                    Image(uiImage: image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                }
+                if let image2 = viewModel.image2 {
+                    Image(uiImage: image2)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(height: 200)
+                }
             }
-            if let image2 = viewModel.image2 {
-                Image(uiImage: image2)
-                    .resizable()
-                    .scaledToFit()
-                    .frame(width: 200, height: 200)
-            }
+            .padding()
+
+            LoggerView(logger: logger)
         }
         .onAppear {
             Task(priority: .low) {
-                print("Low: \(Task.currentPriority)")
+                await logger.log("Low: \(Task.currentPriority)")
             }
 
             Task(priority: .medium) {
                 await Task.yield() // we can also yield to certain priorities.
-                print("Medium: \(Task.currentPriority)")
+                await logger.log("Medium: \(Task.currentPriority)")
             }
 
             Task(priority: .high) {
-                print("High: \(Task.currentPriority)")
+                await logger.log("High: \(Task.currentPriority)")
 
                 /*
                  Child tasks have the same priority and properties as the parent.
                  */
                 Task {
-                    print("Child task of high: \(Task.currentPriority)")
+                    await logger.log("Child task of high: \(Task.currentPriority)")
                 }
 
                 /*
                  Child tasks can also be detached, however it is not recommended by Apple.
                  */
                 Task.detached() {
-                    print("Child task.detached of high: \(Task.currentPriority)")
+                    await logger.log("Child task.detached of high: \(Task.currentPriority)")
                 }
             }
 
             Task(priority: .background) {
-                print("Background: : \(Task.currentPriority)")
+                await logger.log("Background: : \(Task.currentPriority)")
             }
 
             Task(priority: .utility) {
-                print("Utility: \(Task.currentPriority)")
+                await logger.log("Utility: \(Task.currentPriority)")
             }
 
             Task(priority: .userInitiated) {
-                print("UserInitiated: \(Task.currentPriority)")
+                await logger.log("UserInitiated: \(Task.currentPriority)")
             }
 
             Task {
+                await logger.log("Loading 1st img: \(Task.currentPriority)")
                 await viewModel.fetchImage()
-                print("Fetched first Image: \(Task.currentPriority)")
+                await logger.log("Fetched 1st img: \(Task.currentPriority)")
             }
-            Task { // we can have multiple tasks running at the same time.
+
+            Task {
+                await logger.log("Loading 2nd img: \(Task.currentPriority)")
                 await viewModel.fetchImage2()
-                print("Fetched second Image: \(Task.currentPriority)")
+                await logger.log("Fetched 2nd img: \(Task.currentPriority)")
             }
         }
     }
@@ -93,7 +103,7 @@ extension TaskPrioritiesView {
                     self.image = image
                 }
             } catch {
-                print(error.localizedDescription)
+                await Logger.shared.log(error.localizedDescription)
             }
         }
 
@@ -106,7 +116,7 @@ extension TaskPrioritiesView {
                     self.image2 = image2
                 }
             } catch {
-                print(error.localizedDescription)
+                await Logger.shared.log(error.localizedDescription)
             }
         }
     }
